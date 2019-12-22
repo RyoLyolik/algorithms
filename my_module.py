@@ -21,13 +21,13 @@ def prime(n):
 def factorization(n):
     divs = []
     i = 2
-    while 2 <= i and i*i <= n:
+    while 2 <= i and i * i <= n:
         if n % i == 0:
             divs.append(i)
             n //= i
 
         else:
-            i+=1
+            i += 1
     divs.append(n)
     return divs
 
@@ -184,20 +184,85 @@ def standart_number(x):
     elif (x <= 10 and x >= -10):
         print(round(x, 3))
 
-def count_system(num, by=2, to=10):
+
+def count_system(num, by=10, to=2):
     ans_temp = 0
-    if by<10:
-        k=0
+    if by <= 10:
+        k = 0
         while num != 0:
-            ans_temp+=(num%10)*(by**k)
-            k+=1
-            num//=10
+            ans_temp += (num % 10) * (by ** k)
+            k += 1
+            num //= 10
 
     ans = ''
     while ans_temp != 0:
-        ans+=str(ans_temp%to)
-        ans_temp//=to
+        ans += str(ans_temp % to)
+        ans_temp //= to
 
     return int(ans[::-1])
 
 
+def qsort(s, l, r):
+    if l >= r:
+        pass
+    else:
+        q = sum(s[l:r]) // (r - l)
+        i = l
+        j = r
+        while j - i >= 0:
+            while s[i] < q:
+                i += 1
+
+            while s[j] > q:
+                j -= 1
+            if i - j <= 0:
+                s[i], s[j] = s[j], s[i]
+                i += 1
+                j -= 1
+        qsort(s, l, j)
+        qsort(s, i, r)
+
+    return s
+
+
+def deikstr(s, n, matrix):
+    was = []
+    weights = [math.inf for _ in range(n)]
+    weights[s] = 0
+    now = s
+    was.append(now)
+    while math.inf in weights:
+        for i in range(n):
+            if i not in was and matrix[now][i] + weights[now] < weights[i]:
+                weights[i] = matrix[now][i] + weights[now]
+
+        mn = math.inf
+        for i in range(n):
+            if mn > weights[i] and weights[i] != 0 and i not in was:
+                mn = i
+        now = mn
+        was.append(now)
+
+    for i in range(n):
+        if i not in was and matrix[now][i] + weights[now] < weights[i]:
+            weights[i] = matrix[now][i] + weights[now]
+
+    return weights
+
+
+def bfs(now, matrix):
+    l = len(matrix)
+    done = {now}
+    q = [now]
+    vers = []
+    while len(q) != 0:
+        now = q[0]
+        vers.append(now)
+        for i in range(l):
+            if matrix[now][i] != math.inf and i not in done:
+                q.append(i)
+                done.add(i)
+        q.pop(0)
+
+    if len(q) == 0:
+        return vers
